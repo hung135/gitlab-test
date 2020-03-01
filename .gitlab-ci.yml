@@ -1,3 +1,5 @@
+default:
+    image: alpine
 stages:
     - build
     - test
