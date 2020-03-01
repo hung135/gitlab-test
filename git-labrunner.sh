@@ -2,7 +2,7 @@
 # Get the registration token from:
 # http://localhost:8080/root/${project}/settings/ci_cd
 
-registration_token=NTyNq1Jk3HHphSeiFVir
+registration_token=kbVw_UMwQcSc7gGdCJx9
 
 docker exec -it gitlab-runner1 \
   gitlab-runner register \
