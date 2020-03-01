@@ -4,6 +4,9 @@ You essentially create yourself a bogus project within the Gitlab Container.
 Commit and Push or code to it and it will trigger the GitlabRunners do do what ever you want to do.
 Below are the only manual steps you need to do to complete the setup of the project.
 
+Generate your ssl certs:
+- cd .devcontainer
+- bash gencert.sh
 
 
 Log into your Gitlab instance:
