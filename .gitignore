@@ -1,0 +1,8 @@
+config/
+data/
+gitlab/
+certs/
+gitlab-runner*config
+*.crt
+*.csr
+*.key

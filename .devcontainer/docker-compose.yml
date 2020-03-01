@@ -1,0 +1,79 @@
+#-------------------------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See https://go.microsoft.com/fwlink/?linkid=2090316 for license information.
+#-------------------------------------------------------------------------------------------------------------
+
+version: '3.3'
+services:
+  docker-in-docker:
+    # Uncomment the next line to use a non-root user for all processes. You can also
+    # simply use the "remoteUser" property in devcontainer.json if you just want VS Code
+    # and its sub-processes (terminals, tasks, debugging) to execute as the user. On Linux,
+    # you may need to update USER_UID and USER_GID in .devcontainer/Dockerfile to match your
+    # user if not 1000. See https://aka.ms/vscode-remote/containers/non-root for details.
+    # user: vscode
+
+    build: 
+      context: .
+      dockerfile: Dockerfile
+
+    volumes:
+      # Update this to wherever you want VS Code to mount the folder of your project
+      - ..:/workspace:cached
+
+      # Forwards the local Docker socket to the container.
+      - /var/run/docker.sock:/var/run/docker.sock 
+    networks:
+      - gitlab-network
+    # Uncomment the next four lines if you will use a ptrace-based debuggers like C++, Go, and Rust.
+    # cap_add:
+    #  - SYS_PTRACE
+    # security_opt:
+    #   - seccomp:unconfined
+
+    # Overrides default command so things don't shut down after the process ends.
+    command: sleep infinity 
+  gitlabserver:
+    image: 'gitlab/gitlab-ce:latest'
+    restart: always
+    hostname: 'gitlabserver'
+ 
+    # ports:
+    #   - '80:80'
+    #   - '443:443'
+    #   - '22:22'
+    volumes:
+      - ./gitlab/config:/etc/gitlab
+      - ./gitlab/logs:/var/log/gitlab
+      - ./gitlab/data:/var/opt/gitlab
+      - ./certs:/etc/gitlab/ssl/
+
+
+    ports:
+      - '443:443'
+   
+    environment:
+      HOSTIP: ${HOSTIP}
+      # GITLAB_OMNIBUS_CONFIG: |
+      #   gitlab_rails['gitlab_shell_ssh_port'] = 2222
+      #   registry_external_url 'http://localhost:8080'
+      #   registry['enable'] = true
+      #   unicorn['socket'] = '/opt/gitlab/var/unicorn/gitlab.socket'
+    networks:
+      - gitlab-network
+ 
+
+  gitlab-runner1:
+    image: gitlab/gitlab-runner:latest
+    container_name: gitlab-runner1
+    hostname: gitlab-runner1
+    volumes:
+      - './gitlab-runner1-config:/etc/gitlab-runner:Z'
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - './certs/:/etc/gitlab-runner/certs/'
+    networks:
+      - gitlab-network
+networks:
+  gitlab-network:
+    driver: bridge
+    
