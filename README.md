@@ -1,3 +1,11 @@
+This project is a CI/CD development project.  The intent is to use this and beable to setup a gitlab
+CI/CD configuration and test it right here on your local machine also.
+You essentially create yourself a bogus project within the Gitlab Container.
+Commit and Push or code to it and it will trigger the GitlabRunners do do what ever you want to do.
+Below are the only manual steps you need to do to complete the setup of the project.
+
+
+
 Log into your Gitlab instance:
 - https://localhost
 - Create a repo call "gitlab-test" - IT HAS TO BE THIS OR various scripts will break
